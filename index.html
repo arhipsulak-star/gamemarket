@@ -1,0 +1,2124 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>GameMarket — рабочий прототип</title>
+
+<style>
+*{box-sizing:border-box}
+
+body{
+  margin:0;
+  background:#090b10;
+  color:#f7f8fb;
+  font:15px Inter,system-ui,-apple-system,Segoe UI,sans-serif
+}
+
+button,input,select,textarea{font:inherit}
+button{cursor:pointer}
+
+header{
+  position:sticky;
+  top:0;
+  z-index:5;
+  background:#0b0e14ee;
+  backdrop-filter:blur(14px);
+  border-bottom:1px solid #252b38
+}
+
+.nav{
+  max-width:1180px;
+  margin:auto;
+  min-height:68px;
+  padding:10px 18px;
+  display:flex;
+  gap:9px;
+  align-items:center
+}
+
+.logo{
+  font-size:21px;
+  font-weight:900;
+  margin-right:12px
+}
+
+.logo i{
+  color:#8064ff;
+  font-style:normal
+}
+
+.nav button,.ghost{
+  background:transparent;
+  color:#9da5b6;
+  border:0;
+  border-radius:10px;
+  padding:10px 12px
+}
+
+.nav button:hover,
+.nav button.on,
+.ghost:hover{
+  background:#191e28;
+  color:white
+}
+
+.me{
+  margin-left:auto;
+  display:flex;
+  align-items:center;
+  gap:9px
+}
+
+.dot{
+  width:33px;
+  height:33px;
+  border-radius:50%;
+  background:linear-gradient(135deg,#8064ff,#35d6ff)
+}
+
+main{
+  max-width:1180px;
+  margin:auto;
+  padding:0 18px 70px
+}
+
+.page{display:none}
+.page.on{display:block}
+
+.hero{
+  padding:58px 0 30px;
+  display:grid;
+  grid-template-columns:1.35fr .8fr;
+  gap:28px
+}
+
+.eyebrow{
+  color:#9a83ff;
+  font-weight:800
+}
+
+.hero h1{
+  font-size:50px;
+  line-height:1.02;
+  margin:8px 0 14px
+}
+
+.hero p{
+  max-width:650px;
+  color:#9da5b6;
+  line-height:1.6;
+  font-size:17px
+}
+
+.card{
+  background:#121721;
+  border:1px solid #252c39;
+  border-radius:18px;
+  padding:18px
+}
+
+.heroCard{
+  background:linear-gradient(145deg,#19152d,#111720);
+  padding:24px;
+  border-radius:22px;
+  border:1px solid #352e53
+}
+
+.stats{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:9px
+}
+
+.stat{
+  background:#ffffff08;
+  border:1px solid #ffffff0b;
+  border-radius:13px;
+  padding:13px
+}
+
+.stat b{
+  font-size:21px;
+  display:block
+}
+
+.muted{color:#929bac}
+
+.btn{
+  border:0;
+  background:#8064ff;
+  color:white;
+  border-radius:10px;
+  padding:11px 15px;
+  font-weight:750
+}
+
+.btn:hover{filter:brightness(1.12)}
+
+.btn.secondary{background:#252b38}
+.btn.green{background:#15976b}
+.btn.red{background:#a83249}
+
+.full{width:100%}
+
+.section{padding:22px 0}
+
+.head{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:15px;
+  margin-bottom:14px
+}
+
+.head h2{margin:0}
+
+.games,
+.shops,
+.products,
+.listings{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:13px
+}
+
+.game{
+  min-height:125px;
+  background:#121721;
+  border:1px solid #252c39;
+  border-radius:17px;
+  padding:16px;
+  transition:.15s
+}
+
+.game:hover{
+  transform:translateY(-2px);
+  border-color:#4b426b
+}
+
+.game b{
+  display:block;
+  margin-top:12px
+}
+
+.game small{color:#929bac}
+
+.icon{font-size:31px}
+
+.shop h3,
+.product h3,
+.listing h3{
+  margin:9px 0
+}
+
+.shoplogo{
+  width:43px;
+  height:43px;
+  border-radius:12px;
+  background:#242a36;
+  display:grid;
+  place-items:center;
+  font-weight:900
+}
+
+.shopTop{
+  display:flex;
+  gap:11px;
+  align-items:center
+}
+
+.stars{
+  color:#ffc857;
+  font-size:12px
+}
+
+.market{
+  display:grid;
+  grid-template-columns:210px 1fr;
+  gap:16px
+}
+
+.side{
+  height:max-content
+}
+
+.side button{
+  display:block;
+  width:100%;
+  text-align:left;
+  background:transparent;
+  color:#9da5b6;
+  border:0;
+  padding:10px;
+  border-radius:9px
+}
+
+.side button:hover,
+.side button.on{
+  background:#252031;
+  color:white
+}
+
+.product{
+  background:#121721;
+  border:1px solid #252c39;
+  border-radius:17px;
+  padding:15px
+}
+
+.cover{
+  height:105px;
+  border-radius:12px;
+  background:linear-gradient(135deg,#292e3c,#151922);
+  display:grid;
+  place-items:center;
+  font-size:42px
+}
+
+.row{
+  display:flex;
+  justify-content:space-between;
+  align-items:end;
+  gap:8px
+}
+
+.price{
+  font-size:19px;
+  font-weight:900
+}
+
+.tag{
+  font-size:11px;
+  color:#aab2c0;
+  background:#ffffff0a;
+  padding:5px 8px;
+  border-radius:7px;
+  display:inline-block;
+  margin-top:10px
+}
+
+.listing{
+  background:#121721;
+  border:1px solid #252c39;
+  border-radius:17px;
+  padding:17px
+}
+
+.listingFoot{
+  display:flex;
+  justify-content:space-between;
+  align-items:end;
+  gap:10px;
+  margin-top:15px
+}
+
+.urgent{
+  color:#ffc56d;
+  font-weight:800;
+  font-size:12px
+}
+
+.pill{
+  font-size:11px;
+  background:#252b38;
+  border-radius:7px;
+  padding:5px 8px;
+  color:#cbd2de
+}
+
+.exchangeGrid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:13px
+}
+
+.buy{
+  color:#4be1a1;
+  font-weight:800
+}
+
+.sell{
+  color:#ff8295;
+  font-weight:800
+}
+
+.fast{
+  background:linear-gradient(145deg,#19152d,#111720);
+  border:1px solid #352e53;
+  border-radius:22px;
+  padding:25px
+}
+
+.steps{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:10px;
+  margin-top:20px
+}
+
+.step{
+  background:#ffffff08;
+  border:1px solid #ffffff0b;
+  border-radius:12px;
+  padding:13px
+}
+
+.step b{display:block}
+.step span{
+  color:#929bac;
+  font-size:12px
+}
+
+.profile{
+  display:grid;
+  grid-template-columns:260px 1fr;
+  gap:16px
+}
+
+.balance{
+  font-size:30px;
+  font-weight:900;
+  margin:10px 0
+}
+
+.tx{
+  display:flex;
+  justify-content:space-between;
+  gap:10px;
+  padding:13px 0;
+  border-bottom:1px solid #ffffff0a
+}
+
+.tx:last-child{border:0}
+
+.modal{
+  display:none;
+  position:fixed;
+  inset:0;
+  background:#000b;
+  z-index:20;
+  padding:18px;
+  align-items:center;
+  justify-content:center
+}
+
+.modal.on{display:flex}
+
+.modalBox{
+  width:min(600px,100%);
+  max-height:90vh;
+  overflow:auto;
+  background:#151a24;
+  border:1px solid #2b3342;
+  border-radius:20px;
+  padding:20px
+}
+
+.modalHead{
+  display:flex;
+  justify-content:space-between;
+  align-items:center
+}
+
+.x{
+  background:transparent;
+  border:0;
+  color:#9da5b6;
+  font-size:25px
+}
+
+.form{
+  display:grid;
+  gap:11px
+}
+
+.form label{
+  font-size:12px;
+  color:#9da5b6
+}
+
+.form input,
+.form textarea,
+.form select{
+  width:100%;
+  margin-top:5px;
+  background:#0d1118;
+  border:1px solid #29313f;
+  color:white;
+  border-radius:9px;
+  padding:11px
+}
+
+.form textarea{
+  min-height:85px;
+  resize:vertical
+}
+
+.actions{
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap
+}
+
+.toast{
+  position:fixed;
+  right:18px;
+  bottom:18px;
+  background:#181e29;
+  border:1px solid #303847;
+  border-radius:11px;
+  padding:13px 16px;
+  display:none;
+  z-index:30
+}
+
+.toast.on{display:block}
+
+@media(max-width:850px){
+  .hero{grid-template-columns:1fr}
+  .games,
+  .shops,
+  .products{grid-template-columns:repeat(2,1fr)}
+  .market{grid-template-columns:1fr}
+  .exchangeGrid{grid-template-columns:1fr 1fr}
+  .steps{grid-template-columns:1fr 1fr}
+  .profile{grid-template-columns:1fr}
+}
+
+@media(max-width:560px){
+  .nav .optional{display:none}
+  .hero h1{font-size:36px}
+  .games,
+  .shops,
+  .products,
+  .exchangeGrid{grid-template-columns:1fr}
+  .steps{grid-template-columns:1fr}
+  .me span{display:none}
+}
+</style>
+</head>
+
+<body>
+
+<header>
+<div class="nav">
+
+<div class="logo">
+Game<i>Market</i>
+</div>
+
+<button class="on" data-page="home">Главная</button>
+<button data-page="market">Маркет</button>
+<button data-page="buyout">СКУПКА</button>
+<button data-page="exchange">📈 Биржа</button>
+<button data-page="fast">⚡ Продать быстро</button>
+
+<div class="me">
+<button class="ghost" data-page="profile">Профиль</button>
+<div class="dot"></div>
+</div>
+
+</div>
+</header>
+
+<main>
+
+<section id="home" class="page on">
+
+<div class="hero">
+
+<div>
+
+<div class="eyebrow">
+Игровой маркетплейс
+</div>
+
+<h1>
+Покупай. Продавай. Получай лучшую цену.
+</h1>
+
+<p>
+Рабочий прототип GameMarket: товары для игр,
+скупка, биржа и быстрые сделки.
+</p>
+
+<div class="actions">
+
+<button class="btn" data-page="market">
+Открыть маркет
+</button>
+
+<button class="btn secondary" data-page="fast">
+Продать быстро
+</button>
+
+</div>
+
+</div>
+
+<div class="heroCard">
+
+<h3>
+Сейчас на площадке
+</h3>
+
+<div class="stats">
+
+<div class="stat">
+<b id="statListings">128</b>
+<span class="muted">объявлений</span>
+</div>
+
+<div class="stat">
+<b>34</b>
+<span class="muted">скупщика онлайн</span>
+</div>
+
+<div class="stat">
+<b>24/7</b>
+<span class="muted">работает</span>
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+
+<div class="section">
+
+<div class="head">
+<h2>Игры</h2>
+<span class="muted">Нажми на игру</span>
+</div>
+
+<div class="games" id="games"></div>
+
+</div>
+
+
+<div class="section">
+
+<div class="head">
+<h2>Популярные магазины</h2>
+<span class="muted">Лучшие продавцы</span>
+</div>
+
+<div class="shops" id="shops"></div>
+
+</div>
+
+</section>
+
+
+<section id="market" class="page">
+
+<div class="section">
+
+<div class="head">
+
+<div>
+<h2 id="marketTitle">Маркет</h2>
+<span class="muted">Выбери категорию</span>
+</div>
+
+<button class="btn secondary" data-page="home">
+← Игры
+</button>
+
+</div>
+
+
+<div class="market">
+
+<div class="card side">
+
+<b>Категории</b>
+
+<div id="filters"></div>
+
+</div>
+
+<div class="products" id="products"></div>
+
+</div>
+
+</div>
+
+</section>
+
+
+<section id="buyout" class="page">
+
+<div class="section">
+
+<div class="head">
+
+<div>
+<h2>СКУПКА</h2>
+<span class="muted">
+Скупщики предлагают цены, продавец выбирает.
+</span>
+</div>
+
+<button class="btn" id="newBuyout">
++ Разместить
+</button>
+
+</div>
+
+<div class="listings" id="buyouts"></div>
+
+</div>
+
+</section>
+
+
+<section id="exchange" class="page">
+
+<div class="section">
+
+<div class="head">
+
+<div>
+<h2>📈 Биржа</h2>
+<span class="muted">
+Заявки на покупку и продажу.
+</span>
+</div>
+
+<button class="btn" id="newExchange">
++ Создать заявку
+</button>
+
+</div>
+
+<div class="exchangeGrid" id="exchangeList"></div>
+
+</div>
+
+</section>
+
+
+<section id="fast" class="page">
+
+<div class="section">
+
+<div class="fast">
+
+<div class="eyebrow">
+⚡ Быстрая продажа
+</div>
+
+<h2>
+Продай товар, а скупщики сами начнут торговаться.
+</h2>
+
+<p class="muted">
+Укажи игру, товар и желаемую цену.
+Заявка сразу появится в СКУПКЕ.
+</p>
+
+<button class="btn" id="fastStart">
+Начать →
+</button>
+
+<div class="steps">
+
+<div class="step">
+<b>1. Игра</b>
+<span>Выбираешь игру</span>
+</div>
+
+<div class="step">
+<b>2. Товар</b>
+<span>Описываешь аккаунт/предмет</span>
+</div>
+
+<div class="step">
+<b>3. Торг</b>
+<span>Получаешь предложения</span>
+</div>
+
+<div class="step">
+<b>4. Сделка</b>
+<span>Выбираешь лучшее</span>
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+
+<section id="profile" class="page">
+
+<div class="section">
+
+<div class="head">
+
+<div>
+<h2>Мой профиль</h2>
+<span class="muted">
+Демо-пользователь
+</span>
+</div>
+
+<button class="btn secondary" id="reset">
+Сбросить демо
+</button>
+
+</div>
+
+
+<div class="profile">
+
+<div class="card">
+
+<div class="dot" style="width:64px;height:64px"></div>
+
+<h2>
+Player_4821
+</h2>
+
+<span class="pill">
+✓ Проверен
+</span>
+
+<p class="muted">
+⭐ 4.9 · 126 сделок
+</p>
+
+<div class="balance" id="balance"></div>
+
+<span class="muted">
+Баланс
+</span>
+
+<button
+class="btn full"
+style="margin-top:15px"
+id="topup">
+
++10 000 ₽
+
+</button>
+
+</div>
+
+
+<div class="card">
+
+<h3>
+Сделки и предложения
+</h3>
+
+<div id="orders"></div>
+
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+</main>
+
+
+<div class="modal" id="modal">
+
+<div class="modalBox">
+
+<div class="modalHead">
+
+<h2 id="modalTitle">
+Форма
+</h2>
+
+<button class="x" id="close">
+×
+</button>
+
+</div>
+
+<div class="form" id="form"></div>
+
+</div>
+
+</div>
+
+
+<div class="toast" id="toast"></div>
+
+
+<script>
+
+const GAMES=[
+['Minecraft','⛏️'],
+['Fortnite','🟣'],
+['CS2','🎯'],
+['Roblox','🟥'],
+['GTA V','🚗'],
+['Valorant','⚡']
+];
+
+const SHOPS=[
+['GX','GameX','4.9','1 248'],
+['RP','RarePlay','4.8','932'],
+['SK','SkinKing','4.9','2 104'],
+['GG','GG Store','4.7','711']
+];
+
+const PRODUCTS=[
+[
+'Аккаунты',
+'👤',
+'Premium аккаунт',
+'Редкие предметы и высокий уровень',
+'2 490'
+],
+[
+'Валюта',
+'💰',
+'1 000 000 валюты',
+'Быстрая передача',
+'499'
+],
+[
+'Предметы',
+'🎁',
+'Редкий набор предметов',
+'Коллекционный набор',
+'1 290'
+],
+[
+'Скины',
+'🎨',
+'Набор легендарных скинов',
+'3 предмета',
+'1 890'
+],
+[
+'Аккаунты',
+'👤',
+'Аккаунт высокого уровня',
+'Почта не привязана',
+'4 990'
+],
+[
+'Валюта',
+'💰',
+'500 000 валюты',
+'Быстрая доставка',
+'299'
+]
+];
+
+const KEY='gm_real_demo_1';
+
+let state=
+JSON.parse(localStorage.getItem(KEY)||'null')
+||
+{
+balance:25000,
+
+buyouts:[
+{
+id:1,
+title:'Куплю Fortnite аккаунт',
+game:'Fortnite',
+cat:'Аккаунт',
+price:18000,
+desc:'Нужны редкие скины и высокий уровень.',
+who:'GameX',
+offers:2
+},
+
+{
+id:2,
+title:'Куплю CS2 инвентарь',
+game:'CS2',
+cat:'Скины',
+price:75000,
+desc:'Рассмотрю ножи и перчатки.',
+who:'SkinKing',
+offers:4
+},
+
+{
+id:3,
+title:'Срочно продам Roblox аккаунт',
+game:'Roblox',
+cat:'Аккаунт',
+price:12500,
+desc:'Редкие предметы и Robux.',
+who:'Player_921',
+offers:0
+}
+],
+
+orders:[
+{
+id:10,
+title:'Fortnite — аккаунт',
+price:13200,
+other:'GameX',
+status:'Предложение получено'
+}
+],
+
+history:[]
+};
+
+let currentGame='Minecraft';
+let filter='Все';
+
+const $=s=>document.querySelector(s);
+const $$=s=>document.querySelectorAll(s);
+
+
+function esc(s){
+
+return String(s).replace(
+/[&<>"']/g,
+c=>({
+'&':'&amp;',
+'<':'&lt;',
+'>':'&gt;',
+'"':'&quot;',
+"'":'&#39;'
+}[c])
+);
+
+}
+
+
+function rub(n){
+
+return Number(n).toLocaleString('ru-RU')+' ₽';
+
+}
+
+
+function save(){
+
+localStorage.setItem(
+KEY,
+JSON.stringify(state)
+);
+
+render();
+
+}
+
+
+function toast(t){
+
+let e=$('#toast');
+
+e.textContent=t;
+
+e.classList.add('on');
+
+setTimeout(
+()=>e.classList.remove('on'),
+2200
+);
+
+}
+
+
+function page(id){
+
+$$('.page').forEach(
+x=>x.classList.toggle(
+'on',
+x.id===id
+)
+);
+
+$$('.nav>button[data-page]').forEach(
+x=>x.classList.toggle(
+'on',
+x.dataset.page===id
+)
+);
+
+scrollTo(0,0);
+
+render();
+
+}
+
+
+$$('[data-page]').forEach(
+b=>b.addEventListener(
+'click',
+()=>page(b.dataset.page)
+)
+);
+
+
+function renderGames(){
+
+$('#games').innerHTML=
+GAMES.map(
+g=>`
+
+<div
+class="game"
+data-game="${g[0]}"
+>
+
+<div class="icon">
+${g[1]}
+</div>
+
+<b>
+${g[0]}
+</b>
+
+<small>
+Аккаунты · Валюта · Предметы
+</small>
+
+</div>
+
+`
+).join('');
+
+
+$$('.game').forEach(
+e=>e.onclick=()=>{
+
+currentGame=e.dataset.game;
+
+$('#marketTitle').textContent=currentGame;
+
+page('market');
+
+}
+);
+
+}
+
+
+function renderShops(){
+
+$('#shops').innerHTML=
+SHOPS.map(
+s=>`
+
+<div class="card">
+
+<div class="shopTop">
+
+<div class="shoplogo">
+${s[0]}
+</div>
+
+<div>
+
+<b>
+${s[1]}
+</b>
+
+<div class="stars">
+★★★★★ ${s[2]}
+</div>
+
+</div>
+
+</div>
+
+<p class="muted">
+${s[3]} продаж
+</p>
+
+<button
+class="btn full"
+onclick="toast('Открыт магазин ${s[1]}')"
+>
+Открыть магазин
+</button>
+
+</div>
+
+`
+).join('');
+
+}
+
+
+function renderProducts(){
+
+$('#products').innerHTML=
+
+PRODUCTS
+.filter(
+p=>filter==='Все'||p[0]===filter
+)
+.map(
+p=>`
+
+<div class="product">
+
+<div class="cover">
+${GAMES.find(
+g=>g[0]===currentGame
+)?.[1]||'🎮'}${p[1]}
+</div>
+
+<span class="tag">
+${p[0]}
+</span>
+
+<h3>
+${p[2]}
+</h3>
+
+<p class="muted">
+${p[3]}
+</p>
+
+<div class="row">
+
+<span class="price">
+${rub(p[4])}
+</span>
+
+<button
+class="btn"
+onclick="buy('${esc(p[2])}',${p[4]})"
+>
+Купить
+</button>
+
+</div>
+
+</div>
+
+`
+).join('');
+
+}
+
+
+function renderFilters(){
+
+$('#filters').innerHTML=
+
+[
+'Все',
+'Аккаунты',
+'Валюта',
+'Предметы',
+'Скины'
+]
+.map(
+x=>`
+
+<button
+class="${filter===x?'on':''}"
+data-filter="${x}"
+>
+${x}
+</button>
+
+`
+).join('');
+
+
+$$('[data-filter]').forEach(
+b=>b.onclick=()=>{
+
+filter=b.dataset.filter;
+
+renderFilters();
+
+renderProducts();
+
+}
+);
+
+}
+
+
+function renderBuyouts(){
+
+$('#buyouts').innerHTML=
+
+state.buyouts.map(
+x=>`
+
+<div class="listing">
+
+<span class="urgent">
+${x.price>10000
+?'⚡ ВЫСОКИЙ СПРОС'
+:'● ЗАЯВКА'}
+</span>
+
+<h3>
+${esc(x.title)}
+</h3>
+
+<span class="pill">
+${esc(x.game)}
+</span>
+
+<span class="pill">
+${esc(x.cat)}
+</span>
+
+<span class="pill">
+${x.offers} предложений
+</span>
+
+<p class="muted">
+${esc(x.desc)}
+</p>
+
+<div class="listingFoot">
+
+<div>
+
+<span class="muted">
+Бюджет
+</span>
+
+<br>
+
+<b>
+${rub(x.price)}
+</b>
+
+</div>
+
+<button
+class="btn"
+onclick="offer(${x.id})"
+>
+Предложить цену
+</button>
+
+</div>
+
+</div>
+
+`
+).join('');
+
+}
+
+
+function renderExchange(){
+
+$('#exchangeList').innerHTML=
+
+state.buyouts
+.slice(0,6)
+.map(
+x=>`
+
+<div class="card">
+
+<span class="buy">
+● КУПЛЮ
+</span>
+
+<h3>
+${esc(
+x.title
+.replace('Куплю ','')
+.replace('Срочно продам ','')
+)}
+</h3>
+
+<p class="muted">
+${esc(x.desc)}
+</p>
+
+<div class="row">
+
+<b>
+до ${rub(x.price)}
+</b>
+
+<button
+class="btn"
+onclick="offer(${x.id})"
+>
+Предложить
+</button>
+
+</div>
+
+</div>
+
+`
+).join('');
+
+}
+
+
+function renderOrders(){
+
+$('#orders').innerHTML=
+
+(
+state.orders.length
+
+?
+
+state.orders.map(
+(o,i)=>`
+
+<div class="tx">
+
+<div>
+
+<b>
+${esc(o.title)}
+</b>
+
+<br>
+
+<span class="muted">
+${esc(o.other)} · ${rub(o.price)}
+</span>
+
+</div>
+
+<div>
+
+${
+o.status==='Предложение получено'
+
+?
+
+`
+<button
+class="btn green"
+onclick="accept(${i})"
+>
+Принять
+</button>
+
+<button
+class="btn red"
+onclick="reject(${i})"
+>
+Отклонить
+</button>
+`
+
+:
+
+`
+<span class="pill">
+${esc(o.status)}
+</span>
+`
+}
+
+</div>
+
+</div>
+
+`
+).join('')
+
+:
+
+'<div class="muted">Нет активных предложений</div>'
+
+);
+
+}
+
+
+function render(){
+
+$('#balance').textContent=
+rub(state.balance);
+
+$('#statListings').textContent=
+128+state.buyouts.length;
+
+renderGames();
+renderShops();
+renderFilters();
+renderProducts();
+renderBuyouts();
+renderExchange();
+renderOrders();
+
+}
+
+
+function open(title,body){
+
+$('#modalTitle').textContent=title;
+
+$('#form').innerHTML=body;
+
+$('#modal').classList.add('on');
+
+}
+
+
+function close(){
+
+$('#modal').classList.remove('on');
+
+}
+
+
+$('#close').onclick=close;
+
+
+$('#modal').onclick=e=>{
+
+if(e.target.id==='modal')
+close();
+
+};
+
+
+function buy(name,price){
+
+open(
+'Покупка товара',
+
+`
+
+<div class="card">
+
+<b>
+${esc(name)}
+</b>
+
+<p class="muted">
+Стоимость: ${rub(price)}
+</p>
+
+<p class="muted">
+Деньги будут списаны только после
+подтверждения в этом демо.
+</p>
+
+</div>
+
+<div class="actions">
+
+<button
+class="btn green"
+onclick="confirmBuy('${esc(name)}',${price})"
+>
+Подтвердить покупку
+</button>
+
+<button
+class="btn secondary"
+onclick="close()"
+>
+Отмена
+</button>
+
+</div>
+
+`
+);
+
+}
+
+
+function confirmBuy(name,price){
+
+if(state.balance<price){
+
+toast('Недостаточно средств');
+
+return;
+
+}
+
+state.balance-=price;
+
+state.history.unshift({
+
+type:'Покупка',
+title:name,
+amount:-price
+
+});
+
+close();
+
+save();
+
+toast('Покупка оформлена');
+
+}
+
+
+function offer(id){
+
+let x=
+state.buyouts.find(
+a=>a.id===id
+);
+
+open(
+
+'Предложить цену',
+
+`
+
+<div class="card">
+
+<b>
+${esc(x.title)}
+</b>
+
+<p class="muted">
+${esc(x.who)}
+· бюджет ${rub(x.price)}
+</p>
+
+</div>
+
+<label>
+
+Ваша цена
+
+<input
+id="offerPrice"
+type="number"
+max="${x.price}"
+placeholder="Введите сумму"
+>
+
+</label>
+
+<label>
+
+Комментарий
+
+<textarea
+id="offerText"
+placeholder="Условия сделки"
+></textarea>
+
+</label>
+
+<div class="actions">
+
+<button
+class="btn green"
+onclick="sendOffer(${id})"
+>
+Отправить
+</button>
+
+<button
+class="btn secondary"
+onclick="close()"
+>
+Отмена
+</button>
+
+</div>
+
+`
+);
+
+}
+
+
+function sendOffer(id){
+
+let x=
+state.buyouts.find(
+a=>a.id===id
+);
+
+let p=
+Number(
+$('#offerPrice').value
+);
+
+if(!p){
+
+toast('Введите цену');
+
+return;
+
+}
+
+x.offers++;
+
+state.orders.unshift({
+
+id:Date.now(),
+
+title:x.title,
+
+price:p,
+
+other:x.who,
+
+status:'Предложение отправлено'
+
+});
+
+close();
+
+save();
+
+toast('Предложение отправлено');
+
+}
+
+
+function newBuyout(){
+
+open(
+
+'Разместить заявку',
+
+`
+
+<label>
+
+Игра
+
+<select id="fGame">
+
+${GAMES.map(
+g=>`<option>${g[0]}</option>`
+).join('')}
+
+</select>
+
+</label>
+
+
+<label>
+
+Что продаёте?
+
+<select id="fCat">
+
+<option>Аккаунт</option>
+<option>Валюта</option>
+<option>Предметы</option>
+<option>Скины</option>
+
+</select>
+
+</label>
+
+
+<label>
+
+Описание
+
+<textarea
+id="fDesc"
+placeholder="Уровень, предметы, привязки и т.д."
+></textarea>
+
+</label>
+
+
+<label>
+
+Желаемая цена
+
+<input
+id="fPrice"
+type="number"
+placeholder="15000"
+>
+
+</label>
+
+
+<button
+class="btn full"
+onclick="createBuyout()"
+>
+Опубликовать
+</button>
+
+`
+);
+
+}
+
+
+function createBuyout(){
+
+let g=$('#fGame').value;
+
+let c=$('#fCat').value;
+
+let d=$('#fDesc').value;
+
+let p=
+Number(
+$('#fPrice').value
+);
+
+if(!d||!p){
+
+toast('Заполните описание и цену');
+
+return;
+
+}
+
+state.buyouts.unshift({
+
+id:Date.now(),
+
+title:'Срочно продам '+g+' '+c,
+
+game:g,
+
+cat:c,
+
+price:p,
+
+desc:d,
+
+who:'Player_4821',
+
+offers:0
+
+});
+
+close();
+
+save();
+
+toast('Заявка опубликована');
+
+}
+
+
+function fastForm(){
+
+open(
+
+'⚡ Продать быстро',
+
+`
+
+<label>
+
+Игра
+
+<select id="fGame">
+
+${GAMES.map(
+g=>`<option>${g[0]}</option>`
+).join('')}
+
+</select>
+
+</label>
+
+
+<label>
+
+Тип товара
+
+<select id="fCat">
+
+<option>Аккаунт</option>
+<option>Валюта</option>
+<option>Предметы</option>
+<option>Скины</option>
+
+</select>
+
+</label>
+
+
+<label>
+
+Характеристики
+
+<textarea
+id="fDesc"
+placeholder="Опишите товар"
+></textarea>
+
+</label>
+
+
+<label>
+
+Желаемая цена
+
+<input
+id="fPrice"
+type="number"
+placeholder="15000"
+>
+
+</label>
+
+
+<button
+class="btn full"
+onclick="createBuyout()"
+>
+Найти скупщиков →
+</button>
+
+`
+);
+
+}
+
+
+function exchangeForm(){
+
+open(
+
+'📈 Создать заявку',
+
+`
+
+<label>
+
+Игра
+
+<select id="fGame">
+
+${GAMES.map(
+g=>`<option>${g[0]}</option>`
+).join('')}
+
+</select>
+
+</label>
+
+
+<label>
+
+Тип
+
+<select id="fCat">
+
+<option>Аккаунт</option>
+<option>Валюта</option>
+<option>Предметы</option>
+<option>Скины</option>
+
+</select>
+
+</label>
+
+
+<label>
+
+Название товара
+
+<input
+id="fTitle"
+placeholder="Например: аккаунт с редкими скинами"
+>
+
+</label>
+
+
+<label>
+
+Цена
+
+<input
+id="fPrice"
+type="number"
+placeholder="15000"
+>
+
+</label>
+
+
+<label>
+
+Описание
+
+<textarea
+id="fDesc"
+></textarea>
+
+</label>
+
+
+<button
+class="btn full"
+onclick="createExchange()"
+>
+Опубликовать заявку
+</button>
+
+`
+);
+
+}
+
+
+function createExchange(){
+
+let g=$('#fGame').value;
+
+let c=$('#fCat').value;
+
+let t=$('#fTitle').value;
+
+let d=$('#fDesc').value;
+
+let p=
+Number(
+$('#fPrice').value
+);
+
+if(!t||!p){
+
+toast('Заполните название и цену');
+
+return;
+
+}
+
+state.buyouts.unshift({
+
+id:Date.now(),
+
+title:'Куплю '+t,
+
+game:g,
+
+cat:c,
+
+price:p,
+
+desc:d||'Новая заявка на бирже',
+
+who:'Player_4821',
+
+offers:0
+
+});
+
+close();
+
+save();
+
+toast('Заявка опубликована на Бирже');
+
+}
+
+
+function accept(i){
+
+state.orders[i].status=
+'Сделка подтверждена';
+
+state.history.unshift({
+
+type:'Сделка',
+
+title:state.orders[i].title,
+
+amount:0
+
+});
+
+save();
+
+toast('Сделка подтверждена');
+
+}
+
+
+function reject(i){
+
+state.orders[i].status=
+'Отклонена';
+
+save();
+
+toast('Предложение отклонено');
+
+}
+
+
+$('#newBuyout').onclick=
+newBuyout;
+
+
+$('#newExchange').onclick=
+exchangeForm;
+
+
+$('#fastStart').onclick=
+fastForm;
+
+
+$('#topup').onclick=()=>{
+
+state.balance+=10000;
+
+state.history.unshift({
+
+type:'Пополнение',
+
+title:'Демо-бонус',
+
+amount:10000
+
+});
+
+save();
+
+toast('Баланс пополнен на 10 000 ₽');
+
+};
+
+
+$('#reset').onclick=()=>{
+
+if(
+confirm(
+'Сбросить демо-данные?'
+)
+){
+
+localStorage.removeItem(KEY);
+
+location.reload();
+
+}
+
+};
+
+
+render();
+
+</script>
+
+</body>
+</html>
